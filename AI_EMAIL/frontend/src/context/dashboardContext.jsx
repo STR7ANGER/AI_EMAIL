@@ -54,10 +54,16 @@ export const DashboardProvider = ({ children }) => {
   const fetchEmails = async () => {
     try {
       setLoading(true);
+      const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      throw new Error("No authentication token found. Please log in first.");
+    }
       const response = await fetch(`${API_URL}/api/email/inbox`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         credentials: "include",
       });
@@ -151,6 +157,11 @@ export const DashboardProvider = ({ children }) => {
   const handleSendReply = async (replyData) => {
     try {
       setSendingReply(true);
+      const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      throw new Error("No authentication token found. Please log in first.");
+    }
 
       // Always prioritize using the email extracted from the original sender
       let toEmail = selectedEmail.fromEmail;
@@ -188,6 +199,7 @@ export const DashboardProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         credentials: "include",
         body: JSON.stringify(completeReplyData),
